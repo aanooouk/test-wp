@@ -1,0 +1,129 @@
+/*
+Theme Name: Test
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+*/
+
+/* Code coleur pink: cc1db9; gray bg: ecedef; gray color: 5d5d5d; grey icon bg: eeeeee; */
+
+p {
+	margin: 0;
+	padding: 0;
+}
+
+/* Gestion du menu */
+.menu-menu-top-container {
+	margin: 0;
+	padding: 0;
+}
+
+.menu {
+	list-style: none;
+	flex-direction: row!important;
+	display: flex;
+	margin: 0;
+	padding: 0;
+}
+
+.menu-item {
+	display: list-item;
+	padding: 5px 10px 5px 0;
+	border: 0px solid #000;
+}
+
+.menu-item a {
+	display: block;
+	padding: 0 10px;
+	color: #000;
+	border: 1px solid #fff;
+	background: #fff;
+}
+
+.menu-item a:hover {
+	color: #fff;
+	text-decoration: none;
+	border: 1px solid #cc1db9;
+	background: #cc1db9;
+	font-weight: bold;
+}
+
+
+/* Home Page */
+#homepage article {
+	position: relative;
+}
+
+#homepage .wp-block-column {
+	margin: 10px 0;
+}
+
+#homepage .jumbotrom {
+	width: 80%;
+	padding: 0 10px;
+	background: #FFF;
+	margin: auto;
+	/*position: absolute;
+	left: 10%;
+	bottom: 90px;*/
+	border: 0px solid #000;
+	box-shadow: 0 14px 14px -2px #C0C0C0;
+	-webkit-box-shadow: 0 14px 14px -2px #C0C0C0;
+   	-moz-box-shadow: 0 14px 14px -2px #C0C0C0;
+}
+
+#homepage .jumbotrom em {
+	font-weight: bold;
+	color: #cc1db9;
+	text-transform: uppercase;
+}
+
+#homepage .title {
+	clear: both;
+	padding: 70px 0 0 0;
+	font-weight: bold;
+	border-bottom: 2px solid #cc1db9;
+}
+
+
+/* Partie Footer */
+#footer {
+	background: url('img/footer-background-image.jpg');
+	color: #FFF;
+	padding: 70px 0 40px;
+	margin: 50px 0 0 0;
+}
+
+#footer .footer-1 .widget {
+	float: left;
+	width: 25%;
+	text-align: center;
+	margin-bottom: 70px;
+}
+
+#footer .footer-1 .widget .widgettitle {
+	font-size: 20px;
+}
+
+#footer .footer-1 .widget .textwidget {
+	font-size: 12px;
+}
+
+#footer .footer-1 .widget .textwidget a {
+	color: #fff;
+}
+
+#footer .footer-1 .widget .textwidget a:hover {
+	text-decoration: none;
+	color: #cc1db9;
+}
+
+#footer .footer-2 .widget {
+	float: left;
+	width: 50%;
+}
+
+#footer .footer-2 .widget .textwidget {
+	text-align: right;
+	font-size: 10px;
+}
