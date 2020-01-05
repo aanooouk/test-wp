@@ -4,8 +4,8 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: images, posts list, recent posts, thumbnails, widget
 Requires at least: 2.9
 Requires PHP: 5.2
-Tested up to: 5.2.4
-Stable tag: 6.6.0
+Tested up to: 5.3
+Stable tag: 6.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,10 +84,11 @@ Some users published video tutorials on YouTube:
 28. Try to take the first post image as thumbnail
 29. Only use the first post image as thumbnail
 30. Use default thumbnail if no thumbnail is available
-31. Default thumbnail URL
-32. Print slugs of post categories in class attribute of LI elements
-33. Print inline CSS instead of creating a CSS file
-34. No CSS generation at all
+31. Always use the default thumbnail
+32. Default thumbnail URL
+33. Print slugs of post categories in class attribute of LI elements
+34. Print inline CSS instead of creating a CSS file
+35. No CSS generation at all
 
 = Much more options available in the Pro version =
 
@@ -232,6 +233,9 @@ If you want to contribute a translation of the plugin in your language it would 
 2. The second screenshot shows the widget on the Widget Management Page in the backend.
 
 == Changelog ==
+
+= 6.6.1 =
+* Tested successfully with WordPress 5.3
 
 = 6.6.0 =
 * Added option to display only the default thumbnail
@@ -531,6 +535,9 @@ Successfully tested with WordPress 4.0
 * The plugin was released.
 
 == Upgrade Notice ==
+
+= 6.6.1 =
+Tested successfully with WordPress 5.3
 
 = 6.6.0 =
 Added option to display only the default thumbnail, updated translations, tested with WordPress 5.2.4

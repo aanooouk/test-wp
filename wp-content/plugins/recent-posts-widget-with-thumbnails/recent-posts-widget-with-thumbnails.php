@@ -3,7 +3,7 @@
 Plugin Name: Recent Posts Widget With Thumbnails
 Plugin URI:  http://wordpress.org/plugins/recent-posts-widget-with-thumbnails/
 Description: Small and fast plugin to display in the sidebar a list of linked titles and thumbnails of the most recent postings
-Version:     6.6.0
+Version:     6.6.1
 Author:      Martin Stehle
 Author URI:  http://stehle-internet.de
 Text Domain: recent-posts-widget-with-thumbnails
@@ -69,7 +69,7 @@ class Recent_Posts_Widget_With_Thumbnails extends WP_Widget {
 		$this->defaults[ 'excerpt_more' ]		= apply_filters( 'rpwwt_excerpt_more', ' ' . '[&hellip;]' ); // set ellipses as default 'more'
 		$this->defaults[ 'number_posts' ]		= 5; // number of posts to show in the widget
 		$this->defaults[ 'plugin_slug' ]		= 'recent-posts-widget-with-thumbnails'; // identifier of this plugin for WP
-		$this->defaults[ 'plugin_version' ]		= '6.6.0'; // current plugin version
+		$this->defaults[ 'plugin_version' ]		= '6.6.1'; // current plugin version
 		$this->defaults[ 'post_title_length' ] 	= 1000; // default length: 1000 characters
 		$this->defaults[ 'thumb_dimensions' ]	= 'custom'; // dimensions of the thumbnail
 		$this->defaults[ 'thumb_height' ] 		= absint( round( get_option( 'thumbnail_size_h', 110 ) / 2 ) ); // custom height of the thumbnail

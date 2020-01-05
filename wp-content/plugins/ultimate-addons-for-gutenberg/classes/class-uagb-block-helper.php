@@ -5,6 +5,10 @@
  * @package UAGB
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 	/**
@@ -102,7 +106,7 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 			if ( isset( $attr['contentWidth'] ) ) {
 				if ( 'boxed' != $attr['contentWidth'] ) {
 					if ( isset( $attr['themeWidth'] ) && $attr['themeWidth'] == true ) {
-						$inner_width = '#CONTENT_WIDTH#';
+						$inner_width = UAGB_Helper::get_css_value( $content_width, 'px' );
 					} else {
 						if ( isset( $attr['innerWidth'] ) ) {
 							$inner_width = UAGB_Helper::get_css_value( $attr['innerWidth'], $attr['innerWidthType'] );
@@ -207,11 +211,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-section-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-section-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-section-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-section-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -275,7 +281,7 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			if ( isset( $attr['contentWidth'] ) ) {
 				if ( 'theme' == $attr['contentWidth'] ) {
-					$inner_width = '#CONTENT_WIDTH#';
+					$inner_width = UAGB_Helper::get_css_value( $content_width, 'px' );
 				} else if ( 'custom' == $attr['contentWidth'] ) {
 					$inner_width = UAGB_Helper::get_css_value( $attr['width'], $attr['widthType'] );
 				}
@@ -296,15 +302,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 					'height' => UAGB_Helper::get_css_value( $attr['topHeight'], 'px' )
 				),
 				' .uagb-columns__shape-top .uagb-columns__shape-fill' => array(
-					'fill' => $attr['topColor'],
-					'opacity' => ( isset( $attr['topDividerOpacity'] ) && '' != $attr['topDividerOpacity'] ) ? ( ( $attr['topDividerOpacity'] ) / 100 ) : ""
+					'fill' => UAGB_Helper::hex2rgba( $attr['topColor'], ( isset( $attr['topDividerOpacity'] ) && '' != $attr['topDividerOpacity'] ) ? $attr['topDividerOpacity'] : 100 ),
 				),
 				' .uagb-columns__shape-bottom svg' => array(
 					'height' => UAGB_Helper::get_css_value( $attr['bottomHeight'], 'px' )
 				),
 				' .uagb-columns__shape-bottom .uagb-columns__shape-fill' => array(
-					'fill' => $attr['bottomColor'],
-					'opacity' => ( isset( $attr['bottomDividerOpacity'] ) && '' != $attr['bottomDividerOpacity'] ) ? ( ( $attr['bottomDividerOpacity'] ) / 100 ) : ""
+					'fill' => UAGB_Helper::hex2rgba( $attr['bottomColor'], ( isset( $attr['bottomDividerOpacity'] ) && '' != $attr['bottomDividerOpacity'] ) ? $attr['bottomDividerOpacity'] : 100 ),
 				),
 			);
 
@@ -382,11 +386,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-columns-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-columns-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-columns-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-columns-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -450,7 +456,7 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 			}
 
 			$selectors = array(
-				'.uagb-column__wrap'        => $style
+				'.uagb-column__wrap' => $style
 			);
 
 			if ( 'image' == $bg_type ) {
@@ -492,9 +498,7 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			if ( '' != $attr['colWidth'] && 0 != $attr['colWidth'] ) {
 
-				$selectors[''] = array(
-					"width" => UAGB_Helper::get_css_value( $attr['colWidth'], "%" )
-				);
+				$selectors['.uagb-column__wrap']["width"] = UAGB_Helper::get_css_value( $attr['colWidth'], "%" );
 			}
 
 			$m_selectors = array(
@@ -539,11 +543,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-column-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-column-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-column-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-column-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -634,11 +640,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 			}
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-adv-heading-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-adv-heading-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-adv-heading-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-adv-heading-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -822,11 +830,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-buttons-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-buttons-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-buttons-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-buttons-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -1060,11 +1070,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd.
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-infobox-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-infobox-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-infobox-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-infobox-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -1232,9 +1244,11 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 			);
 
 			// @codingStandardsIgnoreEnd.
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-cta-block-' . $id );
-			$tablet  = UAGB_Helper::generate_css( $t_selectors, '#uagb-cta-block-' . $id );
-			$mobile  = UAGB_Helper::generate_css( $m_selectors, '#uagb-cta-block-' . $id );
+
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-cta-block-';
+			$desktop       = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
+			$tablet        = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+			$mobile        = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -1388,11 +1402,12 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 
 			// @codingStandardsIgnoreEnd.
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-testimonial-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-testimonial-';
+			$desktop       = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-testimonial-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-testimonial-' . $id );
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -1560,11 +1575,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-team-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-team-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-team-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-team-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -1703,7 +1720,9 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 			foreach ( $attr['socials'] as $key => $social ) {
 
 				$social['icon_color'] = ( isset( $social['icon_color'] ) ) ? $social['icon_color'] : '';
+				$social['icon_bg_color'] = ( isset( $social['icon_bg_color'] ) ) ? $social['icon_bg_color'] : '';		
 				$social['icon_hover_color'] = ( isset( $social['icon_hover_color'] ) ) ? $social['icon_hover_color'] : '';
+				$social['icon_bg_hover_color'] = ( isset( $social['icon_bg_hover_color'] ) ) ? $social['icon_bg_hover_color'] : '';
 
 				if ( $attr['social_count'] <= $key ) {
 					break;
@@ -1807,11 +1826,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-social-share-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-social-share-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-social-share-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-social-share-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -2062,11 +2083,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-icon-list-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-icon-list-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-icon-list-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-icon-list-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -2162,11 +2185,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-ctm-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-ctm-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-ctm-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-ctm-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -2319,9 +2344,9 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-ctm-' . $id );
-			$tablet  = UAGB_Helper::generate_css( $t_selectors, '#uagb-ctm-' . $id );
-			$mobile  = UAGB_Helper::generate_css( $m_selectors, '#uagb-ctm-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, '.uagb-block-' . $id );
+			$tablet  = UAGB_Helper::generate_css( $t_selectors, '.uagb-block-' . $id );
+			$mobile  = UAGB_Helper::generate_css( $m_selectors, '.uagb-block-' . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -2468,10 +2493,11 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 			);
 
 			// @codingStandardsIgnoreEnd
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-rm-';
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-rm-' . $id );
-			$tablet  = UAGB_Helper::generate_css( $t_selectors, '#uagb-rm-' . $id );
-			$mobile  = UAGB_Helper::generate_css( $m_selectors, '#uagb-rm-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
+			$tablet  = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+			$mobile  = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -2504,11 +2530,11 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-post__grid-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, '.uagb-block-' . $id );
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-post__grid-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, '.uagb-block-' . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-post__grid-' . $id );
+			$mobile = UAGB_Helper::generate_css( $m_selectors, '.uagb-block-' . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -2579,11 +2605,11 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-post__carousel-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, '.uagb-block-' . $id );
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-post__carousel-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, '.uagb-block-' . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-post__carousel-' . $id );
+			$mobile = UAGB_Helper::generate_css( $m_selectors, '.uagb-block-' . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -2616,11 +2642,11 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-post__masonry-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, '.uagb-block-' . $id );
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-post__masonry-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, '.uagb-block-' . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-post__masonry-' . $id );
+			$mobile = UAGB_Helper::generate_css( $m_selectors, '.uagb-block-' . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -2712,9 +2738,6 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 					"border-radius" => UAGB_Helper::get_css_value( $attr['borderRadius'], 'px' ),
 					"border-style"  => $attr['borderStyle'],
 				),
-				" .uagb-post__text .uagb-post__cta:hover" => array(
-					"border-color"=> $attr['borderHColor']
-				),
 				" .uagb-post__text .uagb-post__cta a" => array(
 					"color"=> $attr['ctaColor'],
 					"font-size"     => UAGB_Helper::get_css_value( $attr['ctaFontSize'], $attr['ctaFontSizeType'] ),
@@ -2725,7 +2748,8 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 				),
 				" .uagb-post__text .uagb-post__cta:hover" => array(
 					"color"=> $attr['ctaHColor'],
-					"background"=> $attr['ctaBgHColor']
+					"background"=> $attr['ctaBgHColor'],
+					"border-color"=> $attr['borderHColor']
 				),
 				" .uagb-post__text .uagb-post__cta:hover a" => array(
 					"color"=> $attr['ctaHColor']
@@ -3082,11 +3106,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-blockquote-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-blockquote-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-blockquote-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-blockquote-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -3746,9 +3772,9 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 				),
 			);
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-cf7-styler-' . $id );
-			$tablet  = UAGB_Helper::generate_css( $t_selectors, '#uagb-cf7-styler-' . $id );
-			$mobile  = UAGB_Helper::generate_css( $m_selectors, '#uagb-cf7-styler-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, '.uagb-block-' . $id );
+			$tablet  = UAGB_Helper::generate_css( $t_selectors, '.uagb-block-' . $id );
+			$mobile  = UAGB_Helper::generate_css( $m_selectors, '.uagb-block-' . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -3950,7 +3976,7 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 				' .gfield_checkbox input[type="checkbox"]:checked + label:before' => array(
 					'background-color' => $attr['fieldBgColor'],
 					'color'            => $attr['fieldInputColor'],
-					'font-size'        => 'calc( ' . $attr['fieldVrPadding'] . 'px * 1.8 )',
+					'font-size'        => 'calc( ' . $attr['fieldVrPadding'] . 'px / 1.2 )',
 					'border-color'     => $attr['fieldBorderFocusColor'],
 				),
 				' .gfield_checkbox input[type="checkbox"] + label:before' => array(
@@ -3962,12 +3988,12 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 					'border-color'     => $attr['fieldBorderColor'],
 					'border-width'     => UAGB_Helper::get_css_value( $attr['fieldBorderWidth'], 'px' ),
 					'border-radius'    => UAGB_Helper::get_css_value( $attr['fieldBorderRadius'], $attr['fieldBorderRadiusType'] ),
-					'font-size'        => 'calc( ' . $attr['fieldVrPadding'] . 'px * 1.8 )',
+					'font-size'        => 'calc( ' . $attr['fieldVrPadding'] . 'px / 1.2 )',
 				),
 				' input[type="checkbox"]:checked + label:before' => array(
 					'background-color' => $attr['fieldBgColor'],
 					'color'            => $attr['fieldInputColor'],
-					'font-size'        => 'calc( ' . $attr['fieldVrPadding'] . 'px * 1.8 )',
+					'font-size'        => 'calc( ' . $attr['fieldVrPadding'] . 'px / 1.2 )',
 					'border-color'     => $attr['fieldBorderFocusColor'],
 				),
 				' input[type="checkbox"] + label:before' => array(
@@ -3975,7 +4001,7 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 					'color'            => $attr['fieldInputColor'],
 					'height'           => UAGB_Helper::get_css_value( $attr['fieldVrPadding'], 'px' ),
 					'width'            => UAGB_Helper::get_css_value( $attr['fieldVrPadding'], 'px' ),
-					'font-size'        => 'calc( ' . $attr['fieldVrPadding'] . 'px * 1.8 )',
+					'font-size'        => 'calc( ' . $attr['fieldVrPadding'] . 'px / 1.2 )',
 					'border-color'     => $attr['fieldBorderColor'],
 					'border-style'     => $attr['fieldBorderStyle'],
 					'border-width'     => UAGB_Helper::get_css_value( $attr['fieldBorderWidth'], 'px' ),
@@ -4033,13 +4059,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 					'border-style'  => 'solid',
 					'border-width'  => UAGB_Helper::get_css_value( $attr['fieldBorderWidth'], 'px' ),
 					'border-radius' => UAGB_Helper::get_css_value( $attr['fieldBorderRadius'], $attr['fieldBorderRadiusType'] ),
-					'font-size'     => 'calc( ' . $attr['fieldVrPadding'] . 'px * 1.8 )',
+					'font-size'     => 'calc( ' . $attr['fieldVrPadding'] . 'px / 1.2 )',
 				),
 				' .uagb-gf-styler__field-style-box input[type="checkbox"]:checked + label:before' => array(
 					'border-style'  => 'solid',
 					'border-width'  => UAGB_Helper::get_css_value( $attr['fieldBorderWidth'], 'px' ),
 					'border-radius' => UAGB_Helper::get_css_value( $attr['fieldBorderRadius'], $attr['fieldBorderRadiusType'] ),
-					'font-size'     => 'calc( ' . $attr['fieldVrPadding'] . 'px * 1.8 )',
+					'font-size'     => 'calc( ' . $attr['fieldVrPadding'] . 'px / 1.2 )',
 				),
 				' .gfield_radio input[type="radio"]:checked + label:before' => array(
 					'background-color' => $attr['fieldInputColor'],
@@ -4051,7 +4077,7 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 					'color'            => $attr['radioCheckSelectColor'],
 					'height'           => UAGB_Helper::get_css_value( $attr['radioCheckSize'], 'px' ),
 					'width'            => UAGB_Helper::get_css_value( $attr['radioCheckSize'], 'px' ),
-					'font-size'        => 'calc( ' . $attr['radioCheckSize'] . 'px * 1.8 )',
+					'font-size'        => 'calc( ' . $attr['radioCheckSize'] . 'px / 1.2 )',
 					'border-color'     => $attr['radioCheckBorderColor'],
 					'border-style'     => 'solid',
 					'border-width'     => UAGB_Helper::get_css_value( $attr['radioCheckBorderWidth'], 'px' ),
@@ -4065,7 +4091,7 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 					'color'            => $attr['radioCheckSelectColor'],
 					'height'           => UAGB_Helper::get_css_value( $attr['radioCheckSize'], 'px' ),
 					'width'            => UAGB_Helper::get_css_value( $attr['radioCheckSize'], 'px' ),
-					'font-size'        => 'calc( ' . $attr['radioCheckSize'] . 'px * 1.8 )',
+					'font-size'        => 'calc( ' . $attr['radioCheckSize'] . 'px / 1.2 )',
 					'border-color'     => $attr['radioCheckBorderColor'],
 					'border-width'     => UAGB_Helper::get_css_value( $attr['radioCheckBorderWidth'], 'px' ),
 					'border-radius'    => UAGB_Helper::get_css_value( $attr['radioCheckBorderRadius'], $attr['radioCheckBorderRadiusType'] ),
@@ -4300,9 +4326,9 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 				),
 			);
 
-			$desktop       = UAGB_Helper::generate_css( $selectors, '#uagb-gf-styler-' . $id );
-			$tablet        = UAGB_Helper::generate_css( $t_selectors, '#uagb-gf-styler-' . $id );
-			$mobile        = UAGB_Helper::generate_css( $m_selectors, '#uagb-gf-styler-' . $id );
+			$desktop       = UAGB_Helper::generate_css( $selectors, '.uagb-block-' . $id );
+			$tablet        = UAGB_Helper::generate_css( $t_selectors, '.uagb-block-' . $id );
+			$mobile        = UAGB_Helper::generate_css( $m_selectors, '.uagb-block-' . $id );
 			$generated_css = array(
 				'desktop' => $desktop,
 				'tablet'  => $tablet,
@@ -4390,9 +4416,7 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 				$selectors[" .uagb-marketing-btn__link"]["background"] = UAGB_Helper::hex2rgba( $attr["backgroundColor"], $attr['backgroundOpacity'] );
 
 				// Hover Background
-				$selectors[" .uagb-marketing-btn__link:hover"] = array(
-					"background" => UAGB_Helper::hex2rgba( $attr["backgroundHoverColor"], $attr['backgroundHoverOpacity'] ),
-				);
+				$selectors[" .uagb-marketing-btn__link:hover"]["background"] = UAGB_Helper::hex2rgba( $attr["backgroundHoverColor"], $attr['backgroundHoverOpacity'] );
 
 			} else if ( "gradient" == $attr["backgroundType"] ) {
 
@@ -4456,12 +4480,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 			);
 
 			// @codingStandardsIgnoreEnd
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-marketing-btn-';
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-marketing-btn-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-marketing-btn-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-marketing-btn-' . $id );
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			$generated_css = array(
 				'desktop' => $desktop,
@@ -4523,6 +4548,12 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 				),
 				" .uagb-toc__list-wrap > ul.uagb-toc__list > li:first-child" => array(
 				    "padding-top" => 0
+				),
+				" .uagb-toc__list-wrap ul.uagb-toc__list:first-child" => array(
+					"margin-left" => UAGB_Helper::get_css_value( $attr["hMarginDesktop"], $attr["marginTypeDesktop"] ),
+					"margin-right" => UAGB_Helper::get_css_value( $attr["hMarginDesktop"], $attr["marginTypeDesktop"] ),
+					"margin-top" => UAGB_Helper::get_css_value( $attr["vMarginDesktop"], $attr["marginTypeDesktop"] ),
+					"margin-bottom" => UAGB_Helper::get_css_value( $attr["vMarginDesktop"], $attr["marginTypeDesktop"] ),
 				),
 				" .uagb-toc__list-wrap ul.uagb-toc__list:last-child > li:last-child" => array(
 				    "padding-bottom" => 0
@@ -4623,11 +4654,13 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			// @codingStandardsIgnoreEnd
 
-			$desktop = UAGB_Helper::generate_css( $selectors, '#uagb-toc-' . $id );
+			$base_selector = ( $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-toc-';
 
-			$tablet = UAGB_Helper::generate_css( $t_selectors, '#uagb-toc-' . $id );
+			$desktop = UAGB_Helper::generate_css( $selectors, $base_selector . $id );
 
-			$mobile = UAGB_Helper::generate_css( $m_selectors, '#uagb-toc-' . $id );
+			$tablet = UAGB_Helper::generate_css( $t_selectors, $base_selector . $id );
+
+			$mobile = UAGB_Helper::generate_css( $m_selectors, $base_selector . $id );
 
 			if ( '' !== $attr['scrollToTopColor'] ) {
 				$desktop .= '.uagb-toc__scroll-top { color: ' . $attr['scrollToTopColor'] . '; }';
@@ -4695,12 +4728,9 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 			], $id );
 
 			$settings = json_encode($slick_options);
-			$selector =	'#uagb-testimonial-'. $id;
-			$js = 'if( jQuery( ".wp-block-uagb-testimonial" ).length > 0 ){ ' .
-				'return true ' .
-				'} else {' .
-				'jQuery( "' . $selector . '" ).find( ".is-carousel" ).slick( ' . $settings .' );'.
-			'}';
+			$base_selector = ( isset( $attr['classMigrate'] ) && $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-testimonial-';
+			$selector =	$base_selector . $id;
+			$js = '$( document ).ready( function() { if( $( "' . $selector . '" ).length > 0 ){ $( "' . $selector . '" ).find( ".is-carousel" ).slick( ' . $settings .' ); } } );';
 
 			return $js;
 			// @codingStandardsIgnoreEnd.
@@ -4733,7 +4763,8 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 
 			$via = isset( $attr['iconShareVia'] ) ? $attr['iconShareVia'] : '';
 
-			$selector =	'#uagb-blockquote-'. $id;
+			$base_selector = ( isset( $attr['classMigrate'] ) && $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-blockquote-';
+			$selector =	$base_selector . $id;
 
 			$js = 'jQuery( "' . $selector . '" ).find( ".uagb-blockquote__tweet-button" ).click(function(){'.
 				  'var content = jQuery("' . $selector . '").find(".uagb-blockquote__content").text();'.
@@ -4749,19 +4780,23 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 		 * Get Social Share JS
 		 *
 		 * @since 1.8.1
+		 * @param string $attr The block attributes.
 		 * @param string $id The selector ID.
 		 */
-		public static function get_social_share_js( $id ) {
-			$selector = '#uagb-social-share-' . $id;
-			$js       = 'jQuery( " ' . $selector . ' " ).find( ".uagb-ss__link" ).click(function(){ ' .
-					'var social_url = jQuery( this ).data( "href" ); ' .
+		public static function get_social_share_js( $attr, $id ) {
+
+			$base_selector = ( isset( $attr['classMigrate'] ) && $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-social-share-';
+			$selector      = $base_selector . $id;
+			$js            = 'var ssLinks = document.querySelectorAll( "' . $selector . '" );' . 'for (let j = 0; j < ssLinks.length; j++) {' . 'var ssLink = ssLinks[j].querySelectorAll( ".uagb-ss__link" );';
+			$js           .= 'for (let i = 0; i < ssLink.length; i++) { ssLink[i].addEventListener( "click", function() {' .
+					'var social_url = this.dataset.href; ' .
 					'var target = ""; ' .
 					'if( social_url == "mailto:?body=" ){ ' .
 						'target = "_self";' .
 					'}' .
 					'var request_url = social_url + window.location.href ;' .
 					'window.open( request_url,target );' .
-				'});';
+				'});' . '}}';
 
 			return $js;
 		}
@@ -4779,12 +4814,12 @@ if ( ! class_exists( 'UAGB_Block_Helper' ) ) {
 			$defaults = UAGB_Helper::$block_list['uagb/table-of-contents']['attributes'];
 
 			$attr = array_merge( $defaults, (array) $attr );
-
-			$selector =	'#uagb-toc-'. $id;
+			$base_selector = ( isset( $attr['classMigrate'] ) && $attr['classMigrate'] ) ? '.uagb-block-' : '#uagb-toc-';
+			$selector =	$base_selector . $id;
 
 			$js = 'jQuery( document ).ready(function() { ' .
 					 'UAGBTableOfContents._run( ' . json_encode( $attr ) . ', "'. $selector .'" ); '.
-				'})';
+				'});';
 
 			return $js;
 			// @codingStandardsIgnoreEnd.

@@ -6,6 +6,10 @@
  * @package UAGB
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Renders the Gravity Form shortcode.
  *
@@ -587,7 +591,7 @@ add_action( 'init', 'uagb_blocks_register_gf_styler' );
  * @since 1.12.0
  */
 function uagb_render_gf( $attributes ) {
-	$block_id = 'uagb-gf-styler-' . $attributes['block_id'];
+	$block_id = 'uagb-block-' . $attributes['block_id'];
 	// @codingStandardsIgnoreStart
 	$formId          = $attributes['formId'];
 	$align           = isset( $attributes['align'] ) ? $attributes['align'] : '';
@@ -608,6 +612,7 @@ function uagb_render_gf( $attributes ) {
 	$classname .= $enableLabel ? ' uagb-gf-styler__hide-label' : ' ';
 	$classname .= $advancedValidationSettings ? ' uagb-gf-styler__error-yes' : '';
 	$class 		= isset( $attributes['className']) ? $attributes['className'] : '';
+	$class     .= ' ' . $block_id;
 
 	// @codingStandardsIgnoreend
 	ob_start();
@@ -620,7 +625,7 @@ function uagb_render_gf( $attributes ) {
 
 	if ($formId && 0 != $formId && -1 != $formId) {
 	?>
-		<div class = "<?php echo $class ?> wp-block-uagb-gf-styler uagb-gf-styler__outer-wrap" id = "<?php echo $block_id; ?>" >
+		<div class = "<?php echo $class ?> wp-block-uagb-gf-styler uagb-gf-styler__outer-wrap">
 			<div class = "<?php echo $classname; ?>">
 			<?php echo do_shortcode( '[gravityforms id="' . $formId . '" ' . $disableTitleDesc . ' ajax="' . $enableAjax . '" tabindex="' . $formTabIndex . '"]' ); ?>
 			</div>

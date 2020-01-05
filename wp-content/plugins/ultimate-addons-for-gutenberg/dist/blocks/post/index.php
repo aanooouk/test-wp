@@ -6,6 +6,10 @@
  * @package UAGB
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 global $uagb_post_settings;
 
 /**
@@ -83,7 +87,7 @@ function uagb_post_block_add_script() {
 			<script type="text/javascript" id="uagb-post-masonry-script-<?php echo $key; ?>">
 				( function( $ ) {
 
-					var $scope = $( '#uagb-post__masonry-<?php echo $key; ?>' );
+					var $scope = $( '.uagb-block-<?php echo $key; ?>' );
 					$scope.imagesLoaded( function() {
 						$scope.find( '.is-masonry' ).isotope();
 					});
@@ -107,11 +111,10 @@ function uagb_post_block_add_script() {
 			$mcolumns     = ( isset( $value['mcolumns'] ) ) ? $value['mcolumns'] : 1;
 
 			?>
-			<script type="text/javascript" id="
-			++  <?php echo $key; ?>">
+			<script type="text/javascript" id="<?php echo $key; ?>">
 				( function( $ ) {
 					var cols = parseInt( '<?php echo $value['columns']; ?>' );
-					var $scope = $( '#uagb-post__carousel-<?php echo $key; ?>' ).find( '.is-carousel' );
+					var $scope = $( '.uagb-block-<?php echo $key; ?>' ).find( '.is-carousel' );
 
 					if ( cols >= $scope.children().length ) {
 						return;
@@ -190,13 +193,13 @@ function uagb_get_post_html( $attributes, $query, $layout ) {
 		'uagb-post__columns-mobile-' . $attributes['mcolumns'],
 	);
 
+	$block_id  = 'uagb-block-' . $attributes['block_id'];
 	$outerwrap = array(
 		'uagb-post-grid',
 		( isset( $attributes['className'] ) ) ? $attributes['className'] : '',
 		'uagb-post__image-position-' . $attributes['imgPosition'],
+		$block_id,
 	);
-
-	$block_id = 'uagb-post__' . $layout . '-' . $attributes['block_id'];
 
 	switch ( $layout ) {
 		case 'masonry':
@@ -225,13 +228,15 @@ function uagb_get_post_html( $attributes, $query, $layout ) {
 			break;
 	}
 	?>
-	<div id="<?php echo $block_id; ?>" class="<?php echo implode( ' ', $outerwrap ); ?>">
+	<div class="<?php echo implode( ' ', $outerwrap ); ?>">
 
 		<div class="<?php echo implode( ' ', $wrap ); ?>">
 
 		<?php
 		while ( $query->have_posts() ) {
 			$query->the_post();
+			// Filter to modify the attributes based on content requirement.
+			$attributes = apply_filters( 'uagb_post_alter_attributes', $attributes, get_the_ID() );
 			include 'single.php';
 		}
 			wp_reset_postdata();
@@ -291,9 +296,17 @@ function uagb_register_blocks() {
 					'type'    => 'boolean',
 					'default' => true,
 				),
+				'displayPostTitle'        => array(
+					'type'    => 'boolean',
+					'default' => true,
+				),
 				'displayPostComment'      => array(
 					'type'    => 'boolean',
 					'default' => true,
+				),
+				'displayPostTaxonomy'     => array(
+					'type'    => 'boolean',
+					'default' => false,
 				),
 				'displayPostImage'        => array(
 					'type'    => 'boolean',
@@ -661,9 +674,17 @@ function uagb_register_blocks() {
 					'type'    => 'boolean',
 					'default' => true,
 				),
+				'displayPostTitle'        => array(
+					'type'    => 'boolean',
+					'default' => true,
+				),
 				'displayPostComment'      => array(
 					'type'    => 'boolean',
 					'default' => true,
+				),
+				'displayPostTaxonomy'     => array(
+					'type'    => 'boolean',
+					'default' => false,
 				),
 				'displayPostImage'        => array(
 					'type'    => 'boolean',
@@ -1068,9 +1089,17 @@ function uagb_register_blocks() {
 					'type'    => 'boolean',
 					'default' => true,
 				),
+				'displayPostTitle'        => array(
+					'type'    => 'boolean',
+					'default' => true,
+				),
 				'displayPostComment'      => array(
 					'type'    => 'boolean',
 					'default' => true,
+				),
+				'displayPostTaxonomy'     => array(
+					'type'    => 'boolean',
+					'default' => false,
 				),
 				'displayPostImage'        => array(
 					'type'    => 'boolean',
@@ -1601,6 +1630,11 @@ function uagb_render_image( $attributes ) {
  * @since 0.0.1
  */
 function uagb_render_title( $attributes ) {
+
+	if ( ! $attributes['displayPostTitle'] ) {
+		return;
+	}
+
 	$target = ( $attributes['newTab'] ) ? '_blank' : '_self';
 	do_action( "uagb_single_post_before_title_{$attributes['post_type']}", get_the_ID(), $attributes );
 	?>
@@ -1609,6 +1643,97 @@ function uagb_render_title( $attributes ) {
 	</<?php echo $attributes['titleTag']; ?>>
 	<?php
 	do_action( "uagb_single_post_after_title_{$attributes['post_type']}", get_the_ID(), $attributes );
+}
+
+/**
+ * Render Post Meta - Author HTML.
+ *
+ * @param array $attributes Array of block attributes.
+ *
+ * @since 1.14.0
+ */
+function uagb_render_meta_author( $attributes ) {
+
+	if ( ! $attributes['displayPostAuthor'] ) {
+		return;
+	}
+	?>
+	<span class="uagb-post__author">
+		<span class="dashicons-admin-users dashicons"></span>
+		<?php the_author_posts_link(); ?>
+	</span>
+	<?php
+}
+
+/**
+ * Render Post Meta - Date HTML.
+ *
+ * @param array $attributes Array of block attributes.
+ *
+ * @since 1.14.0
+ */
+function uagb_render_meta_date( $attributes ) {
+
+	if ( ! $attributes['displayPostDate'] ) {
+		return;
+	}
+	global $post;
+	?>
+	<time datetime="<?php echo esc_attr( get_the_date( 'c', $post->ID ) ); ?>" class="uagb-post__date">
+		<span class="dashicons-calendar dashicons"></span>
+		<?php echo esc_html( get_the_date( '', $post->ID ) ); ?>
+	</time>
+	<?php
+}
+
+/**
+ * Render Post Meta - Comment HTML.
+ *
+ * @param array $attributes Array of block attributes.
+ *
+ * @since 1.14.0
+ */
+function uagb_render_meta_comment( $attributes ) {
+
+	if ( ! $attributes['displayPostComment'] ) {
+		return;
+	}
+	?>
+	<span class="uagb-post__comment">
+		<span class="dashicons-admin-comments dashicons"></span>
+		<?php comments_number(); ?>
+	</span>
+	<?php
+}
+
+/**
+ * Render Post Meta - Comment HTML.
+ *
+ * @param array $attributes Array of block attributes.
+ *
+ * @since 1.14.0
+ */
+function uagb_render_meta_taxonomy( $attributes ) {
+
+	if ( ! $attributes['displayPostTaxonomy'] ) {
+		return;
+	}
+	global $post;
+
+	$terms = get_the_terms( $post->ID, $attributes['taxonomyType'] );
+	if ( is_wp_error( $terms ) ) {
+		return;
+	}
+
+	if ( ! isset( $terms[0] ) ) {
+		return;
+	}
+	?>
+	<span class="uagb-post__taxonomy">
+		<span class="dashicons-tag dashicons"></span>
+		<?php echo $terms[0]->name; ?>
+	</span>
+	<?php
 }
 
 /**
@@ -1622,15 +1747,37 @@ function uagb_render_meta( $attributes ) {
 	global $post;
 	// @codingStandardsIgnoreStart
 	do_action( "uagb_single_post_before_meta_{$attributes['post_type']}", get_the_ID(), $attributes );
+
+	$meta_sequence = array( 'author', 'date', 'comment', 'taxonomy' );
+	$meta_sequence = apply_filters( "uagb_single_post_meta_sequence_{$attributes['post_type']}", $meta_sequence, get_the_ID(), $attributes );
 	?>
-	<div class="uagb-post-grid-byline"><?php if ( $attributes['displayPostAuthor'] ) {
-		?><span class="uagb-post__author"><span class="dashicons-admin-users dashicons"></span><?php the_author_posts_link(); ?></span><?php }
-		if ( $attributes['displayPostDate'] ) {
-																?><time datetime="<?php echo esc_attr( get_the_date( 'c', $post->ID ) ); ?>" class="uagb-post__date"><span class="dashicons-calendar dashicons"></span><?php echo esc_html( get_the_date( '', $post->ID ) ); ?></time><?php }
-		if ( $attributes['displayPostComment'] ) {
-																?><span class="uagb-post__comment"><span class="dashicons-admin-comments dashicons"></span><?php comments_number();
-?></span><?php }
-		?></div>
+	<div class="uagb-post-grid-byline">
+		<?php
+		foreach ( $meta_sequence as $key => $sequence ) {
+			switch ( $sequence ) {
+				case 'author':
+					uagb_render_meta_author( $attributes );
+					break;
+
+				case 'date':
+					uagb_render_meta_date( $attributes );
+					break;
+
+				case 'comment':
+					uagb_render_meta_comment( $attributes );
+					break;
+
+				case 'taxonomy':
+					uagb_render_meta_taxonomy( $attributes );
+					break;
+				
+				default:
+					break;
+			}
+		}
+		?>
+	
+	</div>
 	<?php
 	do_action( "uagb_single_post_after_meta_{$attributes['post_type']}", get_the_ID(), $attributes );
 	// @codingStandardsIgnoreEnd
