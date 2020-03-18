@@ -167,7 +167,6 @@ float: left;'
         if (is_admin()) {
             add_action('admin_init', array($this, 'registerAdvgbProfile'));
             add_action('admin_footer', array($this, 'initBlocksList'));
-            add_action('admin_footer', array($this, 'addIconSelectionPopupWrapper'));
             add_action('admin_menu', array($this, 'registerMainMenu'));
             add_action('admin_menu', array($this, 'registerBlockConfigPage'));
             add_action('load-toplevel_page_advgb_main', array($this, 'saveAdvgbData'));
@@ -343,7 +342,7 @@ float: left;'
         wp_enqueue_script(
             'advgb_blocks',
             plugins_url('assets/blocks/blocks.js', dirname(__FILE__)),
-            array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-data', 'wp-editor', 'wp-plugins' ),
+            array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-data', 'wp-editor', 'wp-plugins', 'wp-compose' ),
             ADVANCED_GUTENBERG_VERSION,
             true
         );
@@ -386,7 +385,7 @@ float: left;'
         $blocks_icon_color  = isset($saved_settings['blocks_icon_color']) ? $saved_settings['blocks_icon_color'] : '';
         $rp_default_thumb   = isset($saved_settings['rp_default_thumb']) ? $saved_settings['rp_default_thumb'] : array('url' => $default_thumb, 'id' => 0);
         $icons              = array();
-        $icons['material']  = file_get_contents(plugins_url('assets/css/fonts/codepoints.json', ADVANCED_GUTENBERG_PLUGIN));
+        $icons['material']  = file_get_contents(plugin_dir_path(__DIR__) . 'assets/css/fonts/codepoints.json');
         $icons['material']  = json_decode($icons['material'], true);
 
         wp_localize_script('wp-blocks', 'advgbBlocks', array(
@@ -427,22 +426,19 @@ float: left;'
         );
         wp_enqueue_style('dashicons');
 
-        if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG === true) {
-            wp_enqueue_style(
-                'advgb_blocks_styles',
-                plugins_url('assets/css/blocks_styles/blocks.css', dirname(__FILE__))
-            );
-        } else {
-            wp_enqueue_style(
-                'advgb_blocks_styles_min',
-                plugins_url('assets/css/blocks_styles/blocks.min.css', dirname(__FILE__))
-            );
+        if (is_admin()) {
+            if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG === true) {
+                wp_enqueue_style(
+                    'advgb_blocks_styles',
+                    plugins_url('assets/css/blocks_styles/blocks.css', dirname(__FILE__))
+                );
+            } else {
+                wp_enqueue_style(
+                    'advgb_blocks_styles_min',
+                    plugins_url('assets/css/blocks_styles/blocks.min.css', dirname(__FILE__))
+                );
+            }
         }
-
-        wp_enqueue_script(
-            'advgb_blocks_frontend_scripts',
-            plugins_url('assets/blocks/frontend.js', dirname(__FILE__))
-        );
 
         if (!function_exists('advgbAddScriptAttributes')) {
             /**
@@ -1481,6 +1477,10 @@ float: left;'
      */
     public function registerStylesScriptsFrontend()
     {
+        wp_register_script(
+            'advgb_blocks_frontend_scripts',
+            plugins_url('assets/blocks/frontend.js', dirname(__FILE__))
+        );
         wp_register_style(
             'colorbox_style',
             plugins_url('assets/css/colorbox.css', dirname(__FILE__)),
@@ -4460,9 +4460,9 @@ float: left;'
         if (strpos($content, 'advgb-tabs-block') !== false) {
             wp_enqueue_script('jquery-ui-tabs');
             wp_add_inline_script('jquery-ui-tabs', 'jQuery(document).ready(function($){
-                $(".advgb-tab a:not(.ui-tabs-anchor)").unbind("click");
-                $(".advgb-tabs-block").tabs();
-            });');
+                 $(".advgb-tab a:not(.ui-tabs-anchor)").unbind("click");
+                 $(".advgb-tabs-block").tabs();
+             });');
         }
 
         if (strpos($content, 'advgb-tabs-wrapper') !== false) {
@@ -4606,7 +4606,48 @@ float: left;'
         $style_html = '';
         $blockName = $block['blockName'];
         $blockAttrs = $block['attrs'];
+        $availableBlocks = array(
+            'advgb/adv-tabs',
+            'advgb/adv-tab',
+            'advgb/columns',
+            'advgb/column',
+            'advgb/image',
+            'advgb/icon',
+            'advgb/accordions',
+            'advgb/accordion-item',
+            'advgb/table',
+            'advgb/infobox',
+            'advgb/button',
+            'advgb/login-form',
+            'advgb/count-up',
+            'advgb/summary',
+            'advgb/contact-form',
+            'advgb/images-slider',
+            'advgb/map',
+            'advgb/newsletter',
+            'advgb/testimonial',
+            'advgb/list',
+            'advgb/video',
+            'advgb/recent-posts',
+            'advgb/search-bar',
+            'advgb/social-links',
+            'advgb/woo-products',
+            'advgb/tabs'
+        );
         if ($blockName) {
+            if (in_array($blockName, $availableBlocks)) {
+                if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG === true) {
+                    wp_enqueue_style(
+                        'advgb_blocks_styles',
+                        plugins_url('assets/css/blocks_styles/blocks.css', dirname(__FILE__))
+                    );
+                } else {
+                    wp_enqueue_style(
+                        'advgb_blocks_styles_min',
+                        plugins_url('assets/css/blocks_styles/blocks.min.css', dirname(__FILE__))
+                    );
+                }
+            }
             if ($blockName === 'advgb/list') {
                 $block_class    = $blockAttrs['id'];
                 $font_size      = isset($blockAttrs['fontSize']) ? intval($blockAttrs['fontSize']) : 16;
@@ -4713,6 +4754,14 @@ float: left;'
                 $style_html .= isset($blockAttrs['gutter']) && $blockAttrs['gutter'] !== '0' ? 'padding-right: '.$blockAttrs['gutter'] / 2 .'px;' : '';
                 $style_html .= '}';
 
+                if ($blockName === 'advgb/column') {
+                    $childColID = $blockAttrs['colId'];
+                    $childColWidth = $blockAttrs['width'];
+                    if ($childColWidth !== 0) {
+                        $style_html .= '#' . $childColID . '{width: ' . $childColWidth . '%;}';
+                    }
+                }
+
                 // Styles for tablet
                 $style_html .= '@media screen and (max-width: 1023px) {';
                 $style_html .=  '#'. $colID . '{';
@@ -4803,16 +4852,16 @@ float: left;'
                     $style_html .= '}';
                 }
             } elseif ($blockName === 'advgb/adv-tabs') {
-                $block_id    = $blockAttrs['pid'];
+                $block_class    = isset($blockAttrs['pid']) ? $blockAttrs['pid'] : 'wp-block-advgb-adv-tabs';
                 $active_tab_bg_color  = isset($blockAttrs['activeTabBgColor']) ? $blockAttrs['activeTabBgColor'] : '#5954d6';
                 $active_tab_text_color  = isset($blockAttrs['activeTabTextColor']) ? $blockAttrs['activeTabTextColor'] : '#fff';
 
-                $style_html .= '#'. $block_id . ' li.advgb-tab.ui-tabs-active{';
+                $style_html .= '.'. $block_class . ' ul.advgb-tabs-panel li.advgb-tab.advgb-tab-active {';
                 $style_html .= 'background-color:'.$active_tab_bg_color.' !important;';
                 $style_html .= 'color:'.$active_tab_text_color.' !important;';
                 $style_html .= '}';
 
-                $style_html .= '#'. $block_id . ' .advgb-tab-body-header.header-active{';
+                $style_html .= '#'. $block_class . ' .advgb-tab-body-header.header-active, .'. $block_class . ' .advgb-tab-body-header.header-active{';
                 $style_html .= 'background-color:'.$active_tab_bg_color.' !important;';
                 $style_html .= 'color:'.$active_tab_text_color.' !important;';
                 $style_html .= '}';
@@ -4824,7 +4873,7 @@ float: left;'
                 $item = array(
                     'icon' => 'info',
                     'iconType' => 'material',
-                    'size' => 50,
+                    'size' => 120,
                     'color' => '#111111',
                     'style' => 'default',
                     'bgColor' => '',
@@ -4852,12 +4901,12 @@ float: left;'
                 $items = !isset($blockAttrs['items']) ? $default_items : $blockAttrs['items'];
                 $text_align = !isset($blockAttrs['tAlign']) ? 'center' : $blockAttrs['tAlign'];
 
-                $style_html .= '#' . $block_id . ' .advgb-icons {';
+                $style_html .= '#' . $block_id . ' .advgb-icons, .' . $block_id . ' .advgb-icons {';
                 $style_html .= 'text-align: ' . $text_align . ';';
                 $style_html .= '}';
 
                 foreach ($items as $k => $item) {
-                    $style_html .= '#' . $block_id . ' .advgb-item-'.$k.' .advgb-icon {';
+                    $style_html .= '#' . $block_id . ' .advgb-item-'.$k.' .advgb-icon, .' . $block_id . ' .advgb-item-'.$k.' .advgb-icon {';
                     $style_html .= 'display: flex;';
                     $style_html .= 'align-items:center;';
 
@@ -4880,7 +4929,7 @@ float: left;'
 
                     $style_html .= '}';
 
-                    $style_html .= '#' . $block_id . ' .advgb-item-'.$k.' .advgb-icon > i{';
+                    $style_html .= '#' . $block_id . ' .advgb-item-'.$k.' .advgb-icon > i, .' . $block_id . ' .advgb-item-'.$k.' .advgb-icon > i{';
                     $style_html .= 'font-size: ' . $item['size'] . 'px;';
                     $style_html .= 'color: ' . $item['color'] . ';';
                     $style_html .= '}';
@@ -4906,7 +4955,7 @@ float: left;'
                 $container_border_radius = '';
                 $container_border_radius .= isset($blockAttrs['containerBorderRadius']) ? $blockAttrs['containerBorderRadius'] : 0;
 
-                $style_html .= '#' . $block_id . ' {';
+                $style_html .= '#' . $block_id . ', .' . $block_id . ' {';
                 $style_html .= 'background-color: ' . $container_bg . ';';
                 $style_html .= 'padding: ' . $container_padding . ';';
                 $style_html .= 'border: ' . $container_border . ';';
@@ -4943,7 +4992,7 @@ float: left;'
                 $icon_border_radius = '';
                 $icon_border_radius .= isset($blockAttrs['iconBorderRadius']) ? $blockAttrs['iconBorderRadius'] : 0;
 
-                $style_html .= '#' . $block_id . ' .advgb-infobox-icon-container {';
+                $style_html .= '#' . $block_id . ' .advgb-infobox-icon-container, .' . $block_id . ' .advgb-infobox-icon-container {';
                 $style_html .= 'background-color: ' . $icon_background_color . ';';
                 $style_html .= 'padding: ' . $icon_padding . ';';
                 $style_html .= 'margin: ' . $icon_margin . ';';
@@ -4954,7 +5003,7 @@ float: left;'
                 $icon_color = isset($blockAttrs['iconColor']) ? $blockAttrs['iconColor'] : '#333';
                 $icon_size = isset($blockAttrs['iconSize']) ? $blockAttrs['iconSize'] : '70';
                 $icon_size_unit = isset($blockAttrs['iconSizeUnit']) ? $blockAttrs['iconSizeUnit'] : 'px';
-                $style_html .= '#' . $block_id . ' .advgb-infobox-icon-container i {';
+                $style_html .= '#' . $block_id . ' .advgb-infobox-icon-container i, .' . $block_id . ' .advgb-infobox-icon-container i {';
                 $style_html .= 'color: ' . $icon_color . ';';
                 $style_html .= 'font-size: ' . $icon_size . $icon_size_unit . ';';
                 $style_html .= 'display: block;';
@@ -4984,7 +5033,7 @@ float: left;'
 
                 $title_size_unit = isset($blockAttrs['titleSizeUnit']) ? $blockAttrs['titleSizeUnit'] : 'px';
                 $title_lh_unit = isset($blockAttrs['titleLineHeightUnit']) ? $blockAttrs['titleLineHeightUnit'] : 'px';
-                $style_html .= '#' . $block_id . ' .advgb-infobox-textcontent .advgb-infobox-title {';
+                $style_html .= '#' . $block_id . ' .advgb-infobox-textcontent .advgb-infobox-title, .' . $block_id . ' .advgb-infobox-textcontent .advgb-infobox-title {';
                 $style_html .= 'color: ' . $title_color . ';';
                 $style_html .= 'padding: ' . $title_padding . ';';
                 $style_html .= 'margin: ' . $title_margin . ';';
@@ -5021,7 +5070,7 @@ float: left;'
 
                 $text_size_unit = isset($blockAttrs['textSizeUnit']) ? $blockAttrs['textSizeUnit'] : 'px';
                 $text_lh_unit = isset($blockAttrs['textLineHeightUnit']) ? $blockAttrs['textLineHeightUnit'] : 'px';
-                $style_html .= '#' . $block_id . ' .advgb-infobox-textcontent .advgb-infobox-text {';
+                $style_html .= '#' . $block_id . ' .advgb-infobox-textcontent .advgb-infobox-text, .' . $block_id . ' .advgb-infobox-textcontent .advgb-infobox-text {';
                 $style_html .= 'color: ' . $text_color . ';';
                 $style_html .= 'padding: ' . $text_padding . ';';
                 $style_html .= 'margin: ' . $text_margin . ';';
@@ -5033,6 +5082,8 @@ float: left;'
                 }
                 $style_html .= 'white-space: pre-wrap;';
                 $style_html .= '}'; //end text style
+            } elseif ($blockName === 'advgb/count-up') {
+                wp_enqueue_script('advgb_blocks_frontend_scripts');
             }
         }
 
@@ -5203,16 +5254,5 @@ float: left;'
         }
 
         return $valueReturn;
-    }
-
-    /**
-     * Render html for icon selection popup
-     *
-     * @return boolean        Echo html content
-     */
-    public function addIconSelectionPopupWrapper()
-    {
-        echo '<div id="advgb-popup-icon-wrapper"></div>';
-        return true;
     }
 }

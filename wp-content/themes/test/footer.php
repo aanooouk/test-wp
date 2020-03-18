@@ -1,14 +1,7 @@
 	<div id="footer">
 		<div class="container">
 			<div class="row footer-1">
-				<div class="col-sm-12">
-					<?php dynamic_sidebar("sidebar-2"); ?>
-				</div>
-			</div>
-			<div class="row footer-2">
-				<div class="col-sm-12">
-					<?php dynamic_sidebar("sidebar-3"); ?>
-				</div>
+				<?php dynamic_sidebar("sidebar-1"); ?>
 			</div>
 		</div>
 	</div>

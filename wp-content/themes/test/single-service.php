@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="container">
+<div class="container mt-4">
 	<div class="row">
 		<div class="col-sm-8">
 			<?php if ( have_posts() ) { ?>
@@ -17,7 +17,7 @@
 			<?php } ?>
 		</div>
 		<div class="col-sm-4">
-			<?php get_sidebar(); ?>
+			<?php require_once('sidebar-service.php'); ?>
 		</div>
 	</div>
 </div>

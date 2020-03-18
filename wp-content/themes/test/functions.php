@@ -1,10 +1,23 @@
 <?php
 
 //-------------------------------------
+// Gestion du thème et activation des supports
+function theme_supports()
+{
+    add_theme_support('customize-selective-refresh-widgets');
+    add_theme_support('post-thumbnails'); // Image à la une
+    add_theme_support('title-tag'); // Affichage titre dans les pages via wp_head()
+    add_theme_support('menus'); // Ajout du spport des menus
+
+    register_nav_menu('menu-top', 'Menu en haut de la page');
+}
+add_action('after_setup_theme', 'theme_supports');
+
+//-------------------------------------
 // Gestion des sidebars
 function theme_widgets_init() {
     $sidebar1 = array(
-        'before_widget' => '<div id="%1$s" class="widget %2$s">',
+        'before_widget' => '<div id="%1$s" class="widget %2$s col-6">',
         'after_widget'  => '</div>',
         'before_title'  => '<h2 class="widgettitle">',
         'after_title'   => "</h2>\n",        
@@ -45,16 +58,9 @@ function themename_custom_logo_setup() {
 	'flex-width'  => true,
 	'header-text' => array( 'site-title', 'site-description' ),
 	);
-	add_theme_support( 'custom-logo', $defaults );
+	add_theme_support('custom-logo', $defaults);
 }
-add_action( 'after_setup_theme', 'themename_custom_logo_setup' );
-
-//-------------------------------------
-// Gestion des thumbnails
-add_theme_support( 'post-thumbnails' );
-add_image_size( 'products', 800, 600, false );
-add_image_size( 'square', 256, 256, false );
-add_theme_support( 'customize-selective-refresh-widgets' );
+add_action('after_setup_theme', 'themename_custom_logo_setup');
 
 //-------------------------------------
 // Gestion des custom Type
@@ -94,7 +100,36 @@ function wpdocs_codex_service_init() {
         'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt'/*, 'comments'*/ ),
     );
  
-    register_post_type( 'service', $args );
+    register_post_type('service', $args);
 }
- 
-add_action( 'init', 'wpdocs_codex_service_init' );
+add_action('init', 'wpdocs_codex_service_init');
+
+//-------------------------------------
+// Pour ajouter bootstrap
+function montheme_register_assets()
+{
+    wp_register_style('bootstrap', get_stylesheet_directory_uri().'/css/bootstrap.min.css', []);
+    wp_register_script('bootstrap', get_stylesheet_directory_uri().'/js/bootstrap.min.js', ['popper', 'jquery'], false, true);
+    wp_register_script('popper', get_stylesheet_directory_uri().'/js/popper.min.js', [], false, true);
+    wp_deregister_script('jquery');
+    wp_register_script('jquery', get_stylesheet_directory_uri().'/js/jquery-3.2.1.slim.min.js', [], false, true);
+    wp_enqueue_style('bootstrap');
+    wp_enqueue_script('bootstrap');
+}
+add_action('wp_enqueue_scripts', 'montheme_register_assets');
+
+//-------------------------------------
+// Pour theme bootstrap
+function theme_menu_class()
+{
+    $classes[] = 'nav-item';
+    return $classes;
+}
+add_filter('nav_menu_css_class', 'theme_menu_class');
+
+function theme_menu_link_class($attrs)
+{
+    $attrs['class'] = 'nav-link';
+    return $attrs;
+}
+add_filter('nav_menu_link_attributes', 'theme_menu_link_class');

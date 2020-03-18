@@ -4,11 +4,11 @@
  */
 
 function test_plugin_template_tag() {
-    echo "test plugin template tag";
+    // echo "test plugin template tag";
 }
 
 function test_plugin() {
-    echo "test plugin";
+    // echo "test plugin";
 }
 
 add_action( 'wp_loaded', 'test_plugin' );

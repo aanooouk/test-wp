@@ -3,7 +3,7 @@ Contributors: JoomUnited
 Tags: gutenberg, gutenberg blocks, advanced gutenberg, editor, blocks
 Requires at least: 5.0
 Tested up to: 5.3.2
-Stable tag: 2.3.0
+Stable tag: 2.3.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -23,6 +23,7 @@ Advanced Gutenberg adds the missing blocks and configuration you need to build p
 - Default block configuration (Advanced Gutenberg blocks)
 - Custom CSS styles: apply on Gutenbergparagraph blocks
 - Define Gutenberg editor size and column materialization
+- Performance: only loaded when a block from the plugin is called
 
 
 ## ADVANCED GUTENBERG BLOCKS
@@ -139,6 +140,33 @@ The Advanced Gutenberg Custom CSS can be created from the plugin configuration a
 1. Latest posts and WooCommerce products blocks
 
 == Changelog ==
+
+= 2.3.5 =
+ * Fix : Tabs block error in version 2.3.3
+ * Fix : Tabs block transform to Advanced Tabs block
+
+= 2.3.4 =
+ * Add : Load Advanced Gutenberg resources (JS/CSS) only when a block is called
+ * Add : Gutenberg plugin 7.3 compatibility
+ * Fix : Active tab color does not apply
+ * Fix : Change way to load resource
+
+= 2.3.3 =
+ * Fix : Reusable Tabs block
+ * Fix : Reusable Advanced Accordion block
+ * Fix : Gutenberg 7.2 compatibility
+ * Fix : Migration from old version of Tab block
+
+= 2.3.2 =
+ * Fix : Translation sharing issue in some browsers
+
+= 2.3.1 =
+ * Add : Tab body border style change to NONE in (Tabs block)
+ * Fix : Margin in Table block
+ * Fix : HTML Anchor structure in Summary block
+ * Fix : Keep href attribute if not set action on click in Image Slider block
+ * Fix : Use a local path instead an http in icon blocks: Icon Block, Info Box Block
+ * Fix : Fix column spacing in backend when working with plugin gutenberg in Columns Manager block;
 
 = 2.3.0 =
  * Add : New block: Advanced Icon block
