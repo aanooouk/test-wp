@@ -2,7 +2,7 @@
 Contributors: themeisle, hardeepasrani
 Tags: gutenberg blocks, gutenberg, block,post grid block, google map block, columns block, advanced columns, section, row, layout
 Requires at least: 5.2    
-Tested up to: 5.3  
+Tested up to: 5.4  
 Requires PHP: 5.4  
 Stable tag: trunk
 License: GPLv3  
@@ -45,6 +45,22 @@ It has:
 3. Posts Block
 
 == Changelog ==
+
+##### [Version 1.5.1](https://github.com/Codeinwp/otter-blocks/compare/v1.5.0...v1.5.1) (2020-03-20)
+
+- Adds compatibility with WordPress 5.4
+- Fixed release issue with 1.5.0
+
+
+
+
+#### [Version 1.5.0](https://github.com/Codeinwp/otter-blocks/compare/v1.4.1...v1.5.0) (2020-03-20)
+
+- Adds compatibility with WordPress 5.4
+- Adds compatibility with WordPress 5.4
+
+
+
 
 ##### [Version 1.4.1](https://github.com/Codeinwp/otter-blocks/compare/v1.4.0...v1.4.1) (2020-02-29)
 
