@@ -3,9 +3,9 @@
  * Plugin Name: Test Plugin
  */
 
-function getPosts() {
+function getPosts($post_type = 'service') {
     $services = new WP_Query(array(
-        'post_type'         => 'service',
+        'post_type'         => $post_type,
         'posts_per_page'    => esc_attr(get_option('number')),
     ));
 
@@ -30,7 +30,7 @@ function getPosts() {
 
 function test_plugin_template_tag() {
     $posts = getPosts(); ?>
-        <div class="container">
+        <div class="container mt-4">
             <div class="row">
                 <div class="col-sm-12 text-center">
                     <div class="wp-block-uagb-advanced-heading">
@@ -61,11 +61,27 @@ function test_plugin_template_tag() {
     <?php
 }
 
-add_shortcode('testplugin', 'testplugin');
+add_shortcode('testplugin', 'funcion_test_plugin');
 
-function testplugin(){
-    $posts = getPosts();
-    return "toto";
+function funcion_test_plugin($atts) {
+    $posts = getPosts($atts["post-type"]);
+    
+    $html = '';
+    $html .= '<div class="row">';
+    foreach ($posts as $post) {
+        $html .= '<div class="col-sm-4">';
+        $html .= '<div class="card" id="card-'. $post['id'] .'" style="">';
+        $html .= '<a href=""><img src="'.$post['thumbnail'].'" class="card-img-top" alt="'.$post['title'].'" /></a>';
+        $html .= '<div class="card-body">';
+        $html .= '<h5 class="card-title">'.$post['title'].'</h5>';
+        $html .= '<p class="card-text">'.$post['excerpt'].'</p>';
+        $html .= '<a href="'.$post['permalink'].'" class="btn btn-primary">En savoir plus</a>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+    }
+    $html .= '</div>';
+    return $html;
 }
 
 /*function test_plugin() {

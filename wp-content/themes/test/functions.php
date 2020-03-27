@@ -1,5 +1,7 @@
 <?php
 
+require_once('config/metas.php');
+
 //-------------------------------------
 // Gestion du thème et activation des supports
 function theme_supports()
