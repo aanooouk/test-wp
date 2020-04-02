@@ -89,39 +89,4 @@ function funcion_test_plugin($atts) {
 }
 add_action( 'wp_loaded', 'test_plugin' );*/
 
-
-add_action("admin_menu", "addMenu");
-
-function addMenu()
-{
-    add_menu_page("Exemple Options", "Example Options", 4, 'example-options', 'exampleMenu');
-    add_submenu_page("example_options", "Submenu Exemple 1", "Submenu Exemple 1", 0, "example-options-sub1", "option1");
-
-    // Pour gérer les champs
-	add_action( 'admin_init', 'register_plugin_settings' );
-}
-
-function register_plugin_settings() {
-    register_setting( 'plugin-settings-group', 'number' );
-    add_settings_section('plugin-settings-options', 'Plugin settings options', 'plugin_settings_options', "example_options");
-    add_settings_field('number', 'Nombre d\'éléments', 'number_name', 'example_options', 'plugin-settings-options');
-}
-
-function number_name() {
-    $number = esc_attr(get_option('number'));
-    echo '<input type="text" name="number" value="'.$number.'" placeholder="Nombre de post" />';
-}
-
-function plugin_settings_options() {
-    echo "Gérer les options du plugin";
-}
-
-function exampleMenu() {
-    echo "exampleMenu";
-}
-
-function option1() {
-    require_once 'tpl/settings-page.php';
-}
-
-?>
+require_once('test-plugin-admin.php');

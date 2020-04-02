@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit700e9e74a35ce6bfa82d23ed7bbdcad6
+class ComposerStaticInit43344d74714fcab93deab4b2c7489881
 {
     public static $files = array (
         '4940672e65e7c6c88ed7150711580427' => __DIR__ . '/..' . '/codeinwp/gutenberg-animation/load.php',
@@ -53,9 +53,9 @@ class ComposerStaticInit700e9e74a35ce6bfa82d23ed7bbdcad6
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit700e9e74a35ce6bfa82d23ed7bbdcad6::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit700e9e74a35ce6bfa82d23ed7bbdcad6::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit700e9e74a35ce6bfa82d23ed7bbdcad6::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit43344d74714fcab93deab4b2c7489881::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit43344d74714fcab93deab4b2c7489881::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit43344d74714fcab93deab4b2c7489881::$classMap;
 
         }, null, ClassLoader::class);
     }

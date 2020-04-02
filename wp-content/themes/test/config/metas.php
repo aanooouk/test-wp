@@ -3,9 +3,6 @@
 add_action('admin_init', 'init_meta');
 add_action('save_post', 'save_meta');
 
-
-
-
 add_action('admin_enqueue_scripts', function(){
     wp_register_script('uploaderjs', get_template_directory_uri().'/js/uploader.js');
     wp_enqueue_script('uploaderjs');
